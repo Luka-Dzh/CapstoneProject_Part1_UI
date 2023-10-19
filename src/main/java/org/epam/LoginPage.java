@@ -2,7 +2,11 @@ package org.epam;
 
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
+
+import java.sql.Time;
+import java.time.Duration;
 
 
 public class LoginPage extends BasePage {
@@ -83,6 +87,7 @@ public class LoginPage extends BasePage {
         waitForElements(loginField);
         loginField.sendKeys("dzhanibegashvili@gmail.com");
         passwordField.sendKeys("CapstoneProject");
+        new WebDriverWait(driver, Duration.ofSeconds(1));
         signingIn.click();
 
         waitForElements(profileCircle);
@@ -97,8 +102,7 @@ public class LoginPage extends BasePage {
     }
 
     public PlaylistPage logIn(){
-        loginField.clear();
-        passwordField.clear();
+        waitForElements(signInButton);
         signInButton.click();
         waitForElements(loginField);
         loginField.sendKeys("dzhanibegashvili@gmail.com");
