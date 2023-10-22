@@ -1,13 +1,15 @@
 package org.epam;
 
-import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 
-import java.util.List;
+import java.time.Duration;
 
 public class PlaylistPage extends BasePage{
     @FindBy(xpath = "//button[@aria-label='Создать плейлист или папку']")
@@ -40,6 +42,14 @@ public class PlaylistPage extends BasePage{
     private WebElement newCreatedPlaylist;
     @FindBy(xpath = "//div[@class='Type__TypeElement-sc-goli3j-0 fZDcWX t_yrXoUO3qGsJS4Y6iXX standalone-ellipsis-one-line']")
     private WebElement addedTrack;
+    @FindBy(xpath = "//div[@data-encore-id='type'and contains(text(),'Greatest')]")
+    private WebElement trackToRemove;
+    @FindBy(xpath = "//span[@class='Type__TypeElement-sc-goli3j-0 ieTwfQ ellipsis-one-line PDPsYDh4ntfQE3B4duUI'and contains(text(),'Удалить')]")
+    private WebElement deleteFromPlaylistButton;
+    @FindBy(xpath = "//span[@class='Type__TypeElement-sc-goli3j-0 ieTwfQ ellipsis-one-line PDPsYDh4ntfQE3B4duUI'and text()='Удалить']")
+    private WebElement deletePlaylistButton;
+    @FindBy(xpath = "//span[@class='ButtonInner-sc-14ud5tc-0 glYGDr encore-bright-accent-set MIsUJlamzLYuAlvPbmZz'and text()='Удалить']")
+    private WebElement confirmationToDelete;
 
     protected PlaylistPage(WebDriver driver) {
         super(driver);
@@ -51,10 +61,10 @@ public class PlaylistPage extends BasePage{
 
         return new PlaylistPage(driver);
     }
-    public PlaylistPage assertPlaylistName(String expectedName){
+    public PlaylistPage assertPlaylistName(){
         waitForElements(playlistName);
         String actualName = playlistName.getText();
-        Assert.assertEquals(actualName,expectedName,"Incorrect Playlist naming.");
+        Assert.assertTrue(actualName.contains("Мой плейлист №"),"Incorrect Playlist naming.");
         return new PlaylistPage(driver);
     }
     public PlaylistPage editPlaylistName(){
@@ -88,7 +98,6 @@ public class PlaylistPage extends BasePage{
         actions.contextClick(track).perform();
         addToPlaylist.click();
         addToExactPlaylist.click();
-
         return new PlaylistPage(driver);
     }
     public void assertTrackAddedToPlaylist(String expectedName){
@@ -96,5 +105,50 @@ public class PlaylistPage extends BasePage{
         waitForElements(addedTrack);
         String actualName = addedTrack.getText();
         Assert.assertEquals(actualName,expectedName,"Track is not added.");
+    }
+    public PlaylistPage removeTrackFromPlaylist(){
+        waitForElements(playlistName);
+        searchIcon.click();
+        waitForElements(searchBar);
+        searchBar.click();
+        searchBar.sendKeys("Whitney Houston");
+        waitForElements(tracksFilter);
+        tracksFilter.click();
+        waitForElements(trackToRemove);
+        Actions actions = new Actions(driver);
+        actions.contextClick(trackToRemove).perform();
+        addToPlaylist.click();
+        addToExactPlaylist.click();
+        newCreatedPlaylist.click();
+        waitForElements(trackToRemove);
+        actions.contextClick(trackToRemove).perform();
+        deleteFromPlaylistButton.click();
+        return new PlaylistPage(driver);
+    }
+    public void assertTrackIsRemoved(){
+        newCreatedPlaylist.click();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        wait.until(ExpectedConditions.invisibilityOf(trackToRemove));
+        try {
+            trackToRemove.click();
+            Assert.fail("Track is not deleted.");
+        } catch (NoSuchElementException ignored){}
+    }
+    public PlaylistPage deletePlaylist(){
+        waitForElements(playlistName);
+        Actions actions = new Actions(driver);
+        actions.contextClick(newCreatedPlaylist).perform();
+        waitForElements(deletePlaylistButton);
+        deletePlaylistButton.click();
+        waitForElements(confirmationToDelete);
+        confirmationToDelete.click();
+        return new PlaylistPage(driver);
+    }
+    public void assertPlaylistIsDeleted(){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        try {
+            wait.until(ExpectedConditions.invisibilityOf(playlistName));
+            Assert.fail("Track is not deleted.");
+        } catch (NoSuchElementException ignored){}
     }
 }

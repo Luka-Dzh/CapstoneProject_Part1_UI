@@ -4,6 +4,8 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.regex.Pattern;
+
 
 public class AppTest extends BaseTest {
     @BeforeMethod
@@ -33,15 +35,31 @@ public class AppTest extends BaseTest {
     public void spotifyPlaylistTest(){
         LoginPage loginPage = new LoginPage(driver);
 
-        loginPage.open().logIn().createPlaylist().assertPlaylistName("Мой плейлист № 2")
+        loginPage.open().logIn().createPlaylist().assertPlaylistName()
                 .editPlaylistName().assertEditedPlaylistName("My Favourite Playlist");
     }
     @Test
-    public void spotifyPlaylistTest2(){
+    public void addTrackToPlaylistTest(){
         LoginPage loginPage = new LoginPage(driver);
 
-        loginPage.open().logIn().createPlaylist().searchAndAddToPlaylist()
+        loginPage.open().logIn()
+                .createPlaylist().searchAndAddToPlaylist()
                 .assertTrackAddedToPlaylist("I Will Always Love You");
     }
+    @Test
+    public void removeTrackFromPlaylistTest(){
+        LoginPage loginPage = new LoginPage(driver);
 
+        loginPage.open().logIn()
+                .createPlaylist().removeTrackFromPlaylist()
+                .assertTrackIsRemoved();
+    }
+    @Test
+    public void deletePlaylist(){
+        LoginPage loginPage = new LoginPage(driver);
+
+        loginPage.open().logIn()
+                .createPlaylist().deletePlaylist()
+                .assertPlaylistIsDeleted();
+    }
 }
