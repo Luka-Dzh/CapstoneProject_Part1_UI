@@ -17,24 +17,31 @@ public class AppTest extends BaseTest {
     @Test
     public void spotifyLoginTest(){
         LoginPage loginPage = new LoginPage(driver);
-        loginPage.open().setLanguage();
 
-        loginPage.emptyCredentials();
-        loginPage.assertLoginErrorMessage("Введите имя пользователя или адрес электронной почты из аккаунта Spotify.");
-        loginPage.assertPasswordErrorMessage("Введите пароль.");
+        loginPage.open()
+                .emptyCredentials()
+                .assertLoginErrorMessage("Введите имя пользователя или адрес электронной почты из аккаунта Spotify.")
+                .assertPasswordErrorMessage("Введите пароль.")
 
-        loginPage.incorrectCredentials();
-        loginPage.assertIncorrectLoginOrPasswordErrorMessage("Неправильное имя пользователя или пароль.");
+                .incorrectCredentials()
+                .assertIncorrectLoginOrPasswordErrorMessage("Неправильное имя пользователя или пароль.")
 
-        loginPage.correctCredentials();
-        loginPage.assertAccountName("Luka");
+                .correctCredentials()
+                .assertAccountName("Luka");
     }
     @Test
     public void spotifyPlaylistTest(){
         LoginPage loginPage = new LoginPage(driver);
-        loginPage.open().setLanguage();
 
-        loginPage.logIn().createPlaylist();
+        loginPage.open().logIn().createPlaylist().assertPlaylistName("Мой плейлист № 2")
+                .editPlaylistName().assertEditedPlaylistName("My Favourite Playlist");
+    }
+    @Test
+    public void spotifyPlaylistTest2(){
+        LoginPage loginPage = new LoginPage(driver);
+
+        loginPage.open().logIn().createPlaylist().searchAndAddToPlaylist()
+                .assertTrackAddedToPlaylist("I Will Always Love You");
     }
 
 }

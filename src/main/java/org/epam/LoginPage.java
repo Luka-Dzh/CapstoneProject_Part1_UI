@@ -5,15 +5,10 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 
-import java.sql.Time;
 import java.time.Duration;
 
 
 public class LoginPage extends BasePage {
-    @FindBy(xpath = "//button[@data-testid=\"language-selection-button\"]")
-    private WebElement openLanguages;
-    @FindBy(xpath = "//button[@id=\"en\"]")
-    private WebElement setLanguage;
     @FindBy(xpath = "//button[@data-testid='login-button']")
     private WebElement signInButton;
     @FindBy(xpath = "//input[@id='login-username']")
@@ -45,42 +40,42 @@ public class LoginPage extends BasePage {
         return this;
     }
 
-    public void setLanguage() {
-        openLanguages.click();
-        setLanguage.click();
-    }
-
-    public void emptyCredentials() {
+    public LoginPage emptyCredentials() {
         signInButton.click();
         waitForElements(loginField);
         loginField.sendKeys("Something");
         passwordField.sendKeys("Something");
         loginField.sendKeys(Keys.chord(Keys.CONTROL, "a"), Keys.BACK_SPACE);
         passwordField.sendKeys(Keys.chord(Keys.CONTROL, "a"), Keys.BACK_SPACE);
+        return new LoginPage(driver);
     }
-    public void assertLoginErrorMessage(String expectedMessage) {
+    public LoginPage assertLoginErrorMessage(String expectedMessage) {
         String actualMessage = fillInLoginMessage.getText();
         Assert.assertEquals(actualMessage, expectedMessage, "Login error message doesn't match.");
+        return new LoginPage(driver);
     }
 
-    public void assertPasswordErrorMessage(String expectedMessage) {
+    public LoginPage assertPasswordErrorMessage(String expectedMessage) {
         String actualMessage = fillInPasswordMessage.getText();
         Assert.assertEquals(actualMessage, expectedMessage, "Password error message doesn't match.");
+        return new LoginPage(driver);
     }
-    public void incorrectCredentials(){
+    public LoginPage incorrectCredentials(){
         signInButton.click();
         waitForElements(loginField);
         loginField.sendKeys("Something");
         passwordField.sendKeys("Something");
         signingIn.click();
+        return new LoginPage(driver);
     }
-    public void assertIncorrectLoginOrPasswordErrorMessage(String expectedMessage){
+    public LoginPage assertIncorrectLoginOrPasswordErrorMessage(String expectedMessage){
         waitForElements(incorrectCredentialsMessage);
         String actualMessage = incorrectCredentialsMessage.getText();
         Assert.assertEquals(actualMessage,expectedMessage,"Incorrect Credentials message does not match.");
+        return new LoginPage(driver);
     }
 
-    public void correctCredentials(){
+    public LoginPage correctCredentials(){
         loginField.clear();
         passwordField.clear();
         signInButton.click();
@@ -89,11 +84,11 @@ public class LoginPage extends BasePage {
         passwordField.sendKeys("CapstoneProject");
         new WebDriverWait(driver, Duration.ofSeconds(1));
         signingIn.click();
-
         waitForElements(profileCircle);
         profileCircle.click();
         waitForElements(profileButton);
         profileButton.click();
+        return new LoginPage(driver);
     }
     public void assertAccountName(String expectedName){
         waitForElements(accountName);
