@@ -14,7 +14,7 @@ public class AppTest extends BaseTest {
     }
     @AfterMethod
     public void closeDriver() {
-        //quit();
+        quit();
     }
     @Test
     public void spotifyLoginTest(){
