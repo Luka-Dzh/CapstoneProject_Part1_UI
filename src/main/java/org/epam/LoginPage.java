@@ -84,6 +84,7 @@ public class LoginPage extends BasePage {
         passwordField.sendKeys("CapstoneProject");
         new WebDriverWait(driver, Duration.ofSeconds(1));
         signingIn.click();
+        signingIn.click();
         waitForElements(profileCircle);
         profileCircle.click();
         waitForElements(profileButton);

@@ -18,7 +18,7 @@ public class PlaylistPage extends BasePage{
     private WebElement createPlaylistButton;
     @FindBy(xpath = "//h1[@class='Type__TypeElement-sc-goli3j-0 dYGhLW']")
     private WebElement playlistName;
-    @FindBy(xpath = "//div[@aria-labelledby='listrow-title-spotify:playlist:5RU24ZIZiyQxIoud2UyeNd listrow-subtitle-spotify:playlist:5RU24ZIZiyQxIoud2UyeNd']")
+    @FindBy(xpath = "//div[@class='Box__BoxComponent-sc-y4nds-0 MLyQK Box-sc-8t9c76-0 cLAfSn ojrThQm1wxR2gZ6GntJB']")
     private WebElement createdPlaylist;
     @FindBy(xpath = "//span[contains(text(),'Изменение сведений')]")
     private WebElement changeInfoButton;
@@ -36,9 +36,9 @@ public class PlaylistPage extends BasePage{
     private WebElement track;
     @FindBy(xpath = "//button[@class='wC9sIed7pfp47wZbmU6m']")
     private WebElement addToPlaylist;
-    @FindBy(xpath = "//span[@class='Type__TypeElement-sc-goli3j-0 ieTwfQ ellipsis-one-line PDPsYDh4ntfQE3B4duUI'and contains(text(),'Мой')]")
+    @FindBy(xpath = "//span[@class='Type__TypeElement-sc-goli3j-0 ieTwfQ ellipsis-one-line PDPsYDh4ntfQE3B4duUI'and contains(text(),'New')]")
     private WebElement addToExactPlaylist;
-    @FindBy(xpath = "//li[@class='ufICQKJq0XJE5iiIsZfj caTDfb6Oj7a5_8jBLUSo aRyoyQFJkzhoSOnf2ERM vOp2HlcPkxOHebo3If32 ETclQEbcAcQdGdSioHaJ qEiVyQ28VnOKb0LeijqL']")
+    @FindBy(xpath = "//div[@class='Box__BoxComponent-sc-y4nds-0 MLyQK Box-sc-8t9c76-0 cLAfSn ojrThQm1wxR2gZ6GntJB']")
     private WebElement newCreatedPlaylist;
     @FindBy(xpath = "//div[@class='Type__TypeElement-sc-goli3j-0 fZDcWX t_yrXoUO3qGsJS4Y6iXX standalone-ellipsis-one-line']")
     private WebElement addedTrack;
@@ -50,6 +50,8 @@ public class PlaylistPage extends BasePage{
     private WebElement deletePlaylistButton;
     @FindBy(xpath = "//span[@class='ButtonInner-sc-14ud5tc-0 glYGDr encore-bright-accent-set MIsUJlamzLYuAlvPbmZz'and text()='Удалить']")
     private WebElement confirmationToDelete;
+    @FindBy(xpath = "//a[@class='MfVrtIzQJ7iZXfRWg6eM']")
+    private WebElement checkDeletedPlaylist;
 
     protected PlaylistPage(WebDriver driver) {
         super(driver);
@@ -71,33 +73,30 @@ public class PlaylistPage extends BasePage{
         waitForElements(createdPlaylist);
         Actions actions = new Actions(driver);
         actions.contextClick(createdPlaylist).perform();
-        waitForElements(changeInfoButton);
-        changeInfoButton.click();
-        waitForElements(nameInput);
-        nameInput.clear();
+        waitForElements(changeInfoButton).click();
+        waitForElements(nameInput).clear();
         nameInput.sendKeys("My Favourite Playlist");
         saveButton.click();
         return new PlaylistPage(driver);
     }
     public void assertEditedPlaylistName(String expectedName){
-        createdPlaylist.click();
+        waitForElements(newCreatedPlaylist).click();
         waitForElements(playlistName);
         String actualName = playlistName.getText();
         Assert.assertEquals(actualName,expectedName,"Incorrect Playlist naming.");
     }
     public PlaylistPage searchAndAddToPlaylist(){
-        waitForElements(playlistName);
+        waitForElements(searchIcon);
         searchIcon.click();
-        waitForElements(searchBar);
-        searchBar.click();
-        searchBar.sendKeys("Whitney Elizabeth Houston");
-        waitForElements(tracksFilter);
-        tracksFilter.click();
+        waitForElements(searchBar).click();
+        searchBar.sendKeys("Whitney Houston");
+        waitForElements(tracksFilter).click();
         waitForElements(track);
         Actions actions = new Actions(driver);
         actions.contextClick(track).perform();
-        addToPlaylist.click();
-        addToExactPlaylist.click();
+        waitForElements(addToPlaylist).click();
+        waitForElements(addToExactPlaylist).click();
+        newCreatedPlaylist.click();
         return new PlaylistPage(driver);
     }
     public void assertTrackAddedToPlaylist(String expectedName){
@@ -109,11 +108,9 @@ public class PlaylistPage extends BasePage{
     public PlaylistPage removeTrackFromPlaylist(){
         waitForElements(playlistName);
         searchIcon.click();
-        waitForElements(searchBar);
-        searchBar.click();
+        waitForElements(searchBar).click();
         searchBar.sendKeys("Whitney Houston");
-        waitForElements(tracksFilter);
-        tracksFilter.click();
+        waitForElements(tracksFilter).click();
         waitForElements(trackToRemove);
         Actions actions = new Actions(driver);
         actions.contextClick(trackToRemove).perform();
@@ -138,17 +135,16 @@ public class PlaylistPage extends BasePage{
         waitForElements(playlistName);
         Actions actions = new Actions(driver);
         actions.contextClick(newCreatedPlaylist).perform();
-        waitForElements(deletePlaylistButton);
-        deletePlaylistButton.click();
-        waitForElements(confirmationToDelete);
-        confirmationToDelete.click();
+        waitForElements(deletePlaylistButton).click();
+        waitForElements(confirmationToDelete).click();
         return new PlaylistPage(driver);
     }
     public void assertPlaylistIsDeleted(){
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        wait.until(ExpectedConditions.visibilityOf(checkDeletedPlaylist));
         try {
-            wait.until(ExpectedConditions.invisibilityOf(playlistName));
-            Assert.fail("Track is not deleted.");
+            newCreatedPlaylist.click();
+            Assert.fail("Playlist is not deleted.");
         } catch (NoSuchElementException ignored){}
     }
 }

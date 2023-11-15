@@ -22,8 +22,4 @@ public abstract class BasePage {
         new WebDriverWait(driver, Duration.ofSeconds(4)).until(ExpectedConditions.visibilityOf(element));
         return element;
     }
-    public WebElement getSongFromList(String trackName) {
-        List<WebElement> songsList = driver.findElements(By.xpath("//div[@data-testid=\"tracklist-row\"]//div[@dir=\"auto\"]"));
-        return waitForElements(songsList.stream().filter(p -> p.getText().equals(trackName)).findFirst().get());
-    }
 }
