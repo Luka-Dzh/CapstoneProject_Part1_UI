@@ -39,6 +39,9 @@ public class LoginPage extends BasePage {
         driver.get("https://open.spotify.com/");
         return this;
     }
+    public PlaylistPage goToPlaylistWithoutLogging(){
+        return new PlaylistPage(driver);
+    }
 
     public LoginPage emptyCredentials() {
         signInButton.click();

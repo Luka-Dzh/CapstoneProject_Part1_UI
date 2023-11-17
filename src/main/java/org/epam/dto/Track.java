@@ -13,11 +13,11 @@ public class Track {
         this.snapshot_id = snapshot_id;
     }
 
-    public String getUris() {
+    public String getUri() {
         return uri;
     }
 
-    public void setUris(String uri) {
+    public void setUri(String uri) {
         this.uri = uri;
     }
 

@@ -52,6 +52,8 @@ public class PlaylistPage extends BasePage{
     private WebElement confirmationToDelete;
     @FindBy(xpath = "//a[@class='MfVrtIzQJ7iZXfRWg6eM']")
     private WebElement checkDeletedPlaylist;
+    @FindBy(xpath = "//button[@class='Button-sc-1dqy6lx-0 emaScS QMGfkFWtxrVkgNgFXDyw']")
+    private WebElement cancelPopUp;
 
     protected PlaylistPage(WebDriver driver) {
         super(driver);
@@ -92,6 +94,7 @@ public class PlaylistPage extends BasePage{
         searchBar.sendKeys("Whitney Houston");
         waitForElements(tracksFilter).click();
         waitForElements(track);
+        cancelPopUp.click();
         Actions actions = new Actions(driver);
         actions.contextClick(track).perform();
         waitForElements(addToPlaylist).click();
