@@ -12,6 +12,8 @@ import java.util.List;
 
 
 public abstract class BasePage {
+    String login = System.getenv("login");
+    String password = System.getenv("password");
     protected WebDriver driver;
 
     protected BasePage(WebDriver driver) {

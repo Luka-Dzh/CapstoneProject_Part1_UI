@@ -83,8 +83,8 @@ public class LoginPage extends BasePage {
         passwordField.clear();
         signInButton.click();
         waitForElements(loginField);
-        loginField.sendKeys("dzhanibegashvili@gmail.com");
-        passwordField.sendKeys("CapstoneProject");
+        loginField.sendKeys(login);
+        passwordField.sendKeys(password);
         new WebDriverWait(driver, Duration.ofSeconds(1));
         signingIn.click();
         signingIn.click();
@@ -104,8 +104,8 @@ public class LoginPage extends BasePage {
         waitForElements(signInButton);
         signInButton.click();
         waitForElements(loginField);
-        loginField.sendKeys("dzhanibegashvili@gmail.com");
-        passwordField.sendKeys("CapstoneProject");
+        loginField.sendKeys(login);
+        passwordField.sendKeys(password);
         signingIn.click();
 
         return new PlaylistPage(driver);
